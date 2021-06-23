@@ -11,7 +11,6 @@ namespace dotnet_azdo_artifacts_multidownload
 			var outputPath = "";
 			var runLimit = 0;
 			var pat = "";
-			var sourceBranch = "";
 			var targetBranchParam = "";
 			var artifactName = "";
 			var definitionName = "";        // Build.DefinitionName
@@ -23,7 +22,6 @@ namespace dotnet_azdo_artifacts_multidownload
 					{ "output-path=", s => outputPath = s },
 					{ "pat=", s => pat = s },
 					{ "run-limit=", s => runLimit = int.Parse(s) },
-					{ "source-branch=", s => sourceBranch = s },		// Build.SourceBranchName	
 					{ "target-branch=", s => targetBranchParam = s },   // System.PullRequest.TargetBranch
 					{ "artifact-name=", s => artifactName = s },
 					{ "definition-name=", s => definitionName = s },
@@ -37,7 +35,7 @@ namespace dotnet_azdo_artifacts_multidownload
 			var targetBranch = !string.IsNullOrEmpty(targetBranchParam) && targetBranchParam != "$(System.PullRequest.TargetBranch)" ? targetBranchParam : sourceBranch;
 
 			var downloader = new AzureDevopsDownloader(pat, serverUri);
-			var artifacts = await downloader.DownloadArtifacts(outputPath, projectName, definitionName, artifactName, sourceBranch, targetBranch, currentBuild, runLimit);
+			var artifacts = await downloader.DownloadArtifacts(outputPath, projectName, definitionName, artifactName, targetBranch, currentBuild, runLimit);
 		}
 	}
 }

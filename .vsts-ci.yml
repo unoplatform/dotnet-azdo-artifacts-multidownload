@@ -55,7 +55,7 @@ jobs:
     displayName: .NET Core Build
     inputs:
       command: run
-      arguments: --configuration Release --output-path=$(build.sourcesdirectory)\output --pat=$(System.AccessToken) --source-branch="%GIT_SOURCEBRANCH%" --target-branch="%GIT_TARGETBRANCH%" --artifact-name="drop" --definition-name="$(Build.DefinitionName)" --project-name="$(System.TeamProject)" --server-uri="$(System.TeamFoundationCollectionUri)" --current-build="$(Build.BuildId)" --run-limit="2"
+      arguments: --configuration Release --output-path=$(build.sourcesdirectory)\output --pat=$(System.AccessToken) --target-branch="$(System.PullRequest.TargetBranch)" --artifact-name="drop" --definition-name="$(Build.DefinitionName)" --project-name="$(System.TeamProject)" --server-uri="$(System.TeamFoundationCollectionUri)" --current-build="$(Build.BuildId)" --run-limit="2"
       workingDirectory: $(build.sourcesdirectory)\src\dotnet-azdo-artifacts-multidownload
 
   - task: PublishBuildArtifacts@1

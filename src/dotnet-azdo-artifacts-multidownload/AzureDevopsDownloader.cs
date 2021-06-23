@@ -25,7 +25,6 @@ namespace dotnet_azdo_artifacts_multidownload
 									  string project,
 									  string definitionName,
 									  string artifactName,
-									  string sourceBranch,
 									  string targetBranchName,
 									  int buildId,
 									  int downloadLimit)
@@ -41,7 +40,7 @@ namespace dotnet_azdo_artifacts_multidownload
 				targetBranchName = "refs/heads/" + targetBranchName;
 			}
 
-			Console.WriteLine($"Getting definitions ({basePath}, {project}, {definitionName}, {artifactName}, {sourceBranch}, {targetBranchName}, {buildId}, {downloadLimit})");
+			Console.WriteLine($"Getting definitions ({basePath}, {project}, {definitionName}, {artifactName}, {targetBranchName}, {buildId}, {downloadLimit})");
 			var definitions = await client.GetDefinitionsAsync(project, name: definitionName);
 
 			Console.WriteLine("Getting builds");
