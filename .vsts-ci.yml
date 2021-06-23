@@ -28,6 +28,13 @@ jobs:
       arguments: --configuration Release  "/p:PackageOutputPath=$(build.artifactstagingdirectory)\nuget" "-p:PackageVersion=$(GITVERSION.FullSemVer)" "/p:InformationalVersion=$(GITVERSION.InformationalVersion)" /detailedsummary
       workingDirectory: $(build.sourcesdirectory)\src
 
+  - task: DotNetCoreCLI@2
+    displayName: .NET Core Build
+    inputs:
+      command: run
+      arguments: --configuration Release --output-path=$(build.sourcesdirectory)\output --pat=$(System.AccessToken) --source-branch="%GIT_SOURCEBRANCH%" --target-branch="%GIT_TARGETBRANCH%" --artifact-name="drop" --definition-name="$(Build.DefinitionName)" --project-name="$(System.TeamProject)" --server-uri="$(System.TeamFoundationCollectionUri)" --current-build="$(Build.BuildId)" --run-limit="2"
+      workingDirectory: $(build.sourcesdirectory)\src\dotnet-azdo-artifacts-multidownload
+
   - task: DotNetCoreInstaller@0
     inputs:
       version: '2.1.504'
