@@ -25,7 +25,7 @@ namespace dotnet_azdo_artifacts_multidownload
 									  string project,
 									  string definitionName,
 									  string artifactName,
-									  string targetBranchName,
+									  string sourceBranchName,
 									  int buildId,
 									  int downloadLimit)
 		{
@@ -35,19 +35,19 @@ namespace dotnet_azdo_artifacts_multidownload
 
 			var client = await connection.GetClientAsync<BuildHttpClient>();
 
-			if (!targetBranchName.StartsWith("refs/heads/"))
+			if (!sourceBranchName.StartsWith("refs/heads/"))
 			{
-				targetBranchName = "refs/heads/" + targetBranchName;
+				sourceBranchName = "refs/heads/" + sourceBranchName;
 			}
 
-			Console.WriteLine($"Getting definitions ({basePath}, {project}, {definitionName}, {artifactName}, {targetBranchName}, {buildId}, {downloadLimit})");
+			Console.WriteLine($"Getting definitions ({basePath}, {project}, {definitionName}, {artifactName}, {sourceBranchName}, {buildId}, {downloadLimit})");
 			var definitions = await client.GetDefinitionsAsync(project, name: definitionName);
 
 			Console.WriteLine("Getting builds");
 			var builds = await client.GetBuildsAsync(
 				project,
 				definitions: new[] { definitions.First().Id },
-				branchName: targetBranchName,
+				branchName: sourceBranchName,
 				top: downloadLimit,
 				queryOrder: BuildQueryOrder.FinishTimeDescending,
 				statusFilter: BuildStatus.Completed,
