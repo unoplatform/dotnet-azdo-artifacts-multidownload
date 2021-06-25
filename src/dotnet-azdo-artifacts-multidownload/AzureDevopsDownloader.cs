@@ -26,6 +26,7 @@ namespace dotnet_azdo_artifacts_multidownload
 									  string definitionName,
 									  string artifactName,
 									  string sourceBranchName,
+									  string[] tags,
 									  int buildId,
 									  int downloadLimit)
 		{
@@ -49,6 +50,7 @@ namespace dotnet_azdo_artifacts_multidownload
 				definitions: new[] { definitions.First().Id },
 				branchName: sourceBranchName,
 				top: downloadLimit,
+				tagFilters: tags, 
 				queryOrder: BuildQueryOrder.FinishTimeDescending,
 				statusFilter: BuildStatus.Completed,
 				resultFilter: BuildResult.Succeeded);
