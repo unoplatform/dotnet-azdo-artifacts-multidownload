@@ -13,6 +13,8 @@ namespace dotnet_azdo_artifacts_multidownload
 {
 	class AzureDevopsDownloader
 	{
+		private readonly string DirectorySeparator = Path.DirectorySeparatorChar.ToString();
+
 		private readonly string _pat;
 		private readonly string _collectionUri;
 
@@ -42,7 +44,10 @@ namespace dotnet_azdo_artifacts_multidownload
 				sourceBranchName = "refs/heads/" + sourceBranchName;
 			}
 
-			Console.WriteLine($"Getting definitions ({basePath}, {project}, {definitionName}, {artifactName}, {sourceBranchName}, {buildId}, {downloadLimit})");
+			Console.WriteLine($"Getting definitions (" +
+				$"basePath:{basePath}, project:{project}, definition:{definitionName}, artifact:{artifactName}," +
+				$" branch:{sourceBranchName}, buildId:{buildId}, limit:{downloadLimit}, tags:{string.Format(",", tags)})");
+
 			var definitions = await client.GetDefinitionsAsync(project, name: definitionName);
 
 			Console.WriteLine("Getting builds");
@@ -64,7 +69,7 @@ namespace dotnet_azdo_artifacts_multidownload
 				.Concat(new[] { currentBuild });
 
 			string BuildArtifactPath(Build build)
-				=> Path.Combine(basePath, $@"artifacts\{build.LastChangedDate:yyyyMMdd-hhmmss}-{build.Id}");
+				=> Path.Combine(basePath, "artifacts", $@"{build.LastChangedDate:yyyyMMdd-hhmmss}-{build.Id}");
 
 			foreach (var build in suceededBuilds)
 			{
@@ -94,15 +99,17 @@ namespace dotnet_azdo_artifacts_multidownload
 
 						Console.WriteLine($"Extracting artifact for build {build.Id}");
 
-						fullPath = fullPath.Replace("\\\\", "\\");
+						fullPath = fullPath.Replace(
+							DirectorySeparator + DirectorySeparator,
+							DirectorySeparator);
 
 						using (var archive = ZipFile.OpenRead(tempFile))
 						{
 							foreach (var entry in archive.Entries)
 							{
-								var outPath = Path.Combine(fullPath, entry.FullName.Replace("/", "\\"));
+								var outPath = Path.Combine(fullPath, entry.FullName.Replace("/", DirectorySeparator));
 
-								if (outPath.EndsWith("\\"))
+								if (outPath.EndsWith(Path.DirectorySeparatorChar))
 								{
 									Directory.CreateDirectory(outPath);
 								}
