@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace dotnet_azdo_artifacts_multidownload
@@ -78,7 +79,12 @@ namespace dotnet_azdo_artifacts_multidownload
 					if (artifacts.Any(a => a.Name == artifactName))
 					{
 						Console.WriteLine($"Getting artifact for build {build.Id}");
-						using (var stream = await client.GetArtifactContentZipAsync(project, build.Id, artifactName))
+
+						var artifact = await client.GetArtifactAsync(project, build.Id, artifactName);
+
+						using var downloadClient = new HttpClient();
+
+						using (var stream = await downloadClient.GetStreamAsync(artifact.Resource.DownloadUrl))
 						{
 							using (var f = File.OpenWrite(tempFile))
 							{
@@ -98,13 +104,20 @@ namespace dotnet_azdo_artifacts_multidownload
 
 								if (outPath.EndsWith("\\"))
 								{
-									Directory.CreateDirectory(@"\\?\" + outPath);
+									Directory.CreateDirectory(outPath);
 								}
 								else
 								{
+									var directoryName = Path.GetDirectoryName(outPath)!;
+
+									if (!Directory.Exists(directoryName))
+									{
+										Directory.CreateDirectory(directoryName);
+									}
+
 									using (var stream = entry.Open())
 									{
-										using (var outStream = File.OpenWrite(@"\\?\" + outPath))
+										using (var outStream = File.OpenWrite(outPath))
 										{
 											await stream.CopyToAsync(outStream);
 										}
