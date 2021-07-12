@@ -46,7 +46,7 @@ namespace dotnet_azdo_artifacts_multidownload
 
 			Console.WriteLine($"Getting definitions (" +
 				$"basePath:{basePath}, project:{project}, definition:{definitionName}, artifact:{artifactName}," +
-				$" branch:{sourceBranchName}, buildId:{buildId}, limit:{downloadLimit}, tags:{string.Format(",", tags)})");
+				$" branch:{sourceBranchName}, buildId:{buildId}, limit:{downloadLimit}, tags:{string.Join(",", tags)})");
 
 			var definitions = await client.GetDefinitionsAsync(project, name: definitionName);
 
