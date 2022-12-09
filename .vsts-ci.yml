@@ -32,9 +32,9 @@ jobs:
     displayName: Use GitVersion
 
   - task: UseDotNet@2
-    displayName: 'Use .NET 5.0.103 SDK'
+    displayName: 'Use .NET 6.0.403 SDK'
     inputs:
-      version: 5.0.103
+      version: 6.0.403
 
   - task: DotNetCoreCLI@2
     displayName: .NET Core Build
