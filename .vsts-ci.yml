@@ -17,7 +17,6 @@ jobs:
     inputs:
       packageType: runtime
       version: 6.0.4
-      installationPath: '${{parameters.dotnetInstallationPath}}'
 
   - task: gitversion/setup@0
     retryCountOnTaskFailure: 3
