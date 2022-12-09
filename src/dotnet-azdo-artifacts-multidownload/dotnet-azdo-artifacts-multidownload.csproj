@@ -2,10 +2,11 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace>dotnet_azdo_artifacts_multidownload</RootNamespace>
+    	<TargetFramework>net5.0</TargetFramework>
+    	<RootNamespace>dotnet_azdo_artifacts_multidownload</RootNamespace>
 		<Nullable>enable</Nullable>
-		
+		<RollForward>Major</RollForward>
+
 		<PackAsTool>true</PackAsTool>
 		<ToolCommandName>azdo-artifacts-multidownload</ToolCommandName>
 	</PropertyGroup>
