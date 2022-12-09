@@ -29,7 +29,7 @@ Example pipeline definition:
     command: custom
     custom: tool
     arguments: install --tool-path . dotnet-azdo-artifacts-multidownload
-  displayName: Install NBGV tool
+  displayName: Install Artifacts multi-download tool
 
  - script: azdo-artifacts-multidownload --pat=$(System.AccessToken) --source-branch="$(Build.SourceBranch)" --artifact-name="drop" --definition-name="$(Build.DefinitionName)" --project-name="$(System.TeamProject)" --server-uri="$(System.TeamFoundationCollectionUri)" --current-build="$(Build.BuildId)" --run-limit="2"
    displayName: Set Version

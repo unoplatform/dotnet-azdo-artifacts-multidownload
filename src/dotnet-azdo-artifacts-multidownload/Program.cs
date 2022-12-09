@@ -1,5 +1,6 @@
 ﻿using Mono.Options;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace dotnet_azdo_artifacts_multidownload
@@ -51,7 +52,7 @@ namespace dotnet_azdo_artifacts_multidownload
 				Console.WriteLine("\t--definition-name=\tThe Azure Devops build definition name");
 				Console.WriteLine("\t--artifact-name=\tThe Azure Devops build artifact name");
 				Console.WriteLine("\t--pat=\t\t\tAn Azure Devops PAT (Usually $(System.AccessToken) when running inside a pipeline)");
-				Console.WriteLine("\t--source-branch=\tThe branch to use to find previous builds (Usuall $(Build.SourceBranch) when running inside a pipeline)");
+				Console.WriteLine("\t--source-branch=\tThe branch to use to find previous builds (Usually $(Build.SourceBranch) when running inside a pipeline)");
 				Console.WriteLine("\t--current-build=\tThe first build to look for prior artifacts (Usually $(Build.BuildId) when running inside a pipeline) ");
 				Console.WriteLine("\t--run-limit=\t\tThe number of previous artifacts to get (Defaults to 1)");
 				Console.WriteLine("\t--tags=\t\t\tAn optional comma separated list of tags to filter builds");
@@ -61,7 +62,7 @@ namespace dotnet_azdo_artifacts_multidownload
 			else
 			{
 				var downloader = new AzureDevopsDownloader(pat, serverUri);
-				await downloader.DownloadArtifacts(basePath: outputPath,
+				await downloader.DownloadArtifacts(basePath: Path.GetFullPath(outputPath),
 										  project: projectName,
 										  definitionName: definitionName,
 										  artifactName: artifactName,
