@@ -11,10 +11,26 @@ jobs:
   - checkout: self
     clean: true
     
-  - task: GitVersion@5
+  - task: UseDotNet@2
+    displayName: 'Use .Net Core runtime 6.0.4'
+    retryCountOnTaskFailure: 3
     inputs:
-      updateAssemblyInfo: false
+      packageType: runtime
+      version: 6.0.4
+      installationPath: '${{parameters.dotnetInstallationPath}}'
+
+  - task: gitversion/setup@0
+    retryCountOnTaskFailure: 3
+    inputs:
+      versionSpec: '5.10.3'
+
+  - task: gitversion/execute@0
+    retryCountOnTaskFailure: 3
+    inputs:
+      updateAssemblyInfo: 'False'
+      useConfigFile: true
       configFilePath: gitversion.yml
+    displayName: Use GitVersion
 
   - task: UseDotNet@2
     displayName: 'Use .NET 5.0.103 SDK'
@@ -28,21 +44,21 @@ jobs:
       arguments: --configuration Release  "/p:PackageOutputPath=$(build.artifactstagingdirectory)\nuget" "-p:PackageVersion=$(GITVERSION.FullSemVer)" "/p:InformationalVersion=$(GITVERSION.InformationalVersion)" /detailedsummary
       workingDirectory: $(build.sourcesdirectory)\src
 
-  # - task: DotNetCoreInstaller@0
-  #   inputs:
-  #     version: '2.1.504'
+  - task: DotNetCoreInstaller@0
+    inputs:
+      version: '2.1.504'
 
-  # - task: PowerShell@2
-  #   displayName: Authenticode Sign Packages
-  #   inputs:
-  #     filePath: build/Sign-Package.ps1
-  #   env:
-  #     SignClientUser: $(SignClientUser)
-  #     SignClientSecret: $(SignClientSecret)
-  #     SignPackageName: "Uno.PackageDiff"
-  #     SignPackageDescription: "Uno.PackageDiff"
-  #     ArtifactDirectory: $(build.artifactstagingdirectory)
-  #   condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
+  - task: PowerShell@2
+    displayName: Authenticode Sign Packages
+    inputs:
+      filePath: build/Sign-Package.ps1
+    env:
+      SignClientUser: $(SignClientUser)
+      SignClientSecret: $(SignClientSecret)
+      SignPackageName: "Uno.PackageDiff"
+      SignPackageDescription: "Uno.PackageDiff"
+      ArtifactDirectory: $(build.artifactstagingdirectory)
+    condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
 
   - task: PublishBuildArtifacts@1
     condition: always()
