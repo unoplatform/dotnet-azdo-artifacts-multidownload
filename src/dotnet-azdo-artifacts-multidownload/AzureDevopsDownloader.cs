@@ -84,12 +84,10 @@ namespace dotnet_azdo_artifacts_multidownload
 					if (artifacts.Any(a => a.Name == artifactName))
 					{
 						Console.WriteLine($"Getting artifact for build {build.Id}");
-
-						var artifact = await client.GetArtifactAsync(project, build.Id, artifactName);
-
+				
 						using var downloadClient = new HttpClient();
 
-						using (var stream = await downloadClient.GetStreamAsync(artifact.Resource.DownloadUrl))
+						using (var stream = await client.GetArtifactContentZipAsync(project, build.Id, artifactName))
 						{
 							using (var f = File.OpenWrite(tempFile))
 							{
